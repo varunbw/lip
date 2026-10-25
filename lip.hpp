@@ -2,6 +2,10 @@
 
 #include <format>
 #include <fstream>
+#include <memory>
+#include <optional>
+#include <print>
+#include <queue>
 #include <stdexcept>
 #include <sstream>
 #include <string>
@@ -386,4 +390,182 @@ std::vector<std::vector<char>> FileParse_Char2D(std::ifstream& fin) {
     }
 
     return res;
+}
+
+
+// -- Binary Tree
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+
+    TreeNode() : val(0), left(nullptr), right(nullptr) {};
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {};
+};
+
+class BinaryTree {
+
+    TreeNode* root;
+
+    void DeleteNode(TreeNode* node);
+
+public:
+
+    BinaryTree(const std::vector<std::string>& nodes);
+    ~BinaryTree();
+
+    TreeNode* Root() const {
+        return this->root;
+    }
+
+    void SetRoot(TreeNode* value) {
+        this->root = value;
+    }
+
+    void PrintPreOrder (const TreeNode* node = nullptr) const;
+    void PrintInOrder  (const TreeNode* node = nullptr) const;
+    void PrintPostOrder(const TreeNode* node = nullptr) const;
+    void PrintLevelOrder() const;
+};
+
+
+/*
+    @brief Constructs a binary tree out of the given vector
+    @param nodes The representation of nodes
+    @return Root of tree
+
+    Leetcode uses BFS to serialize binary trees into a string.
+    ex:   1
+         / \
+        2   3
+           / \
+          4   5
+    
+    gets serialized into "[1,2,3,null,null,4,5]"
+
+    * Check comment in source code for clearer visual representation
+*/
+BinaryTree::BinaryTree(const std::vector<std::string>& nodes) {
+
+    if (nodes.empty() || nodes[0] == "null") {
+        throw std::runtime_error(MakeErrorMessage("Empty vector passed as argument"));
+    }
+
+    this->root = new TreeNode(std::stoi(nodes[0]));
+
+    // Use a queue to build the tree level by level
+    std::queue<TreeNode*> queue;
+    queue.push(this->root);
+
+    int i = 1;
+    while (queue.empty() == false && i < nodes.size()) {
+
+        TreeNode* curr = queue.front();
+        queue.pop();
+
+        // Process the left child
+        if (nodes[i] != "null") {
+            TreeNode* leftNode = new TreeNode(std::stoi(nodes[i]));
+            curr->left = leftNode;
+            queue.push(leftNode);
+        }
+        i++;
+
+        // Process the right child
+        if (i < nodes.size() && nodes[i] != "null") {
+            TreeNode* rightNode = new TreeNode(std::stoi(nodes[i]));
+            curr->right = rightNode;
+            queue.push(rightNode);
+        }
+        i++;
+    }
+}
+
+BinaryTree::~BinaryTree() {
+    DeleteNode(this->root);
+}
+
+void BinaryTree::DeleteNode(TreeNode* node) {
+
+    if (node == nullptr) {
+        return;
+    }
+
+    DeleteNode(node->left);
+    DeleteNode(node->right);
+
+    delete node;
+}
+
+
+void BinaryTree::PrintPreOrder(const TreeNode* node) const {
+
+    if (node == nullptr) {
+        if (this->root == nullptr) {
+            return;
+        }
+
+        node = this->root;
+    }
+
+    std::print("{}", node->val);
+    if (node->left)  PrintPreOrder(node->left);
+    if (node->right) PrintPreOrder(node->right);
+}
+
+
+void BinaryTree::PrintInOrder(const TreeNode* node) const {
+
+    if (node == nullptr) {
+        if (this->root == nullptr) {
+            return;
+        }
+
+        node = this->root;
+    }
+
+    if (node->left)  PrintInOrder(node->left);
+    std::print("{}", node->val);
+    if (node->right) PrintInOrder(node->right);
+}
+
+void BinaryTree::PrintPostOrder(const TreeNode* node) const {
+
+    if (node == nullptr) {
+        if (this->root == nullptr) {
+            return;
+        }
+
+        node = this->root;
+    }
+
+    if (node->left)  PrintPostOrder(node->left);
+    if (node->right) PrintPostOrder(node->right);
+    std::print("{}", node->val);
+}
+
+
+void BinaryTree::PrintLevelOrder() const {
+
+    if (this->root == nullptr) {
+        return;
+    }
+
+    std::queue<const TreeNode*> queue;
+    queue.push(this->root);
+
+    while (queue.size()) {
+        const TreeNode* curr = queue.front();
+        queue.pop();
+
+        std::print("{}", curr->val);
+
+        if (curr->left) {
+            queue.push(curr->left);
+        }
+        if (curr->right) {
+            queue.push(curr->right);
+        }
+    }
+    
 }
