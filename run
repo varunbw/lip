@@ -1,0 +1,9 @@
+g++ -g -std=c++23 main.cpp -o main -fsanitize=address -fsanitize=undefined
+
+# Check if compilation was successful
+if [ $? -ne 0 ]; then
+    echo "Compilation failed"
+    exit 1
+fi
+
+./main
