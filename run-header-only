@@ -1,4 +1,9 @@
-g++ -g -std=c++23 main.cpp -o main -fsanitize=address -fsanitize=undefined
+# Compile
+g++ -g \
+    main.cpp -o main \
+    -std=c++23 \
+    -fsanitize=address \
+    -fsanitize=undefined
 
 # Check if compilation was successful
 if [ $? -ne 0 ]; then

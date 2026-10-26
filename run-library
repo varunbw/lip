@@ -1,0 +1,16 @@
+# Compile
+g++ -g \
+    main.cpp -o main \
+    -Llib -llip \
+    -flto=auto \
+    -std=c++23 \
+    -fsanitize=address \
+    -fsanitize=undefined
+
+# Check if compilation was successful
+if [ $? -ne 0 ]; then
+    echo "Compilation failed"
+    exit 1
+fi
+
+./main
