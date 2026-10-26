@@ -393,6 +393,83 @@ std::vector<std::vector<char>> FileParse_Char2D(std::ifstream& fin) {
 }
 
 
+
+// -- Linked List
+struct ListNode {
+    int val;
+    ListNode *next;
+    
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+class LinkedList {
+
+    ListNode* head;
+
+    void Print(const ListNode* node) const;
+    void DeleteNode(ListNode* node);
+    
+public:
+
+    LinkedList(const std::vector<int>& nodes);
+    ~LinkedList();
+
+    ListNode* GetFirst() const;
+    void SetFirst(ListNode* value);
+
+    void Print() const;
+};
+
+
+LinkedList::LinkedList(const std::vector<int>& nodes) {
+
+    if (nodes.empty()) {
+        throw std::runtime_error(MakeErrorMessage("Empty vector passed as argument"));
+    }
+
+    this->head = new ListNode(nodes[0]);
+    ListNode* prev = head;
+    
+    for (const int num : nodes) {
+
+        ListNode* newNode = new ListNode(num);
+        prev->next = newNode;
+        prev = newNode;
+    }
+}
+
+LinkedList::~LinkedList() {
+    DeleteNode(head);
+}
+
+void LinkedList::DeleteNode(ListNode* node) {
+
+    if (node == nullptr) {
+        return;
+    }
+
+    DeleteNode(node->next);
+    delete node;
+}
+
+void LinkedList::Print(const ListNode* node) const {
+
+    if (node == nullptr) {
+        return;
+    }
+
+    std::print("{}, ", node->val);
+    Print(node->next);
+}
+
+void LinkedList::Print() const {
+    this->Print(this->head);
+    std::println("");
+}
+
+
 // -- Binary Tree
 struct TreeNode {
     int val;
@@ -407,24 +484,21 @@ class BinaryTree {
 
     TreeNode* root;
 
-    void DeleteNode(TreeNode* node);
-
-public:
-
-    BinaryTree(const std::vector<std::string>& nodes);
-    ~BinaryTree();
-
-    TreeNode* Root() const {
-        return this->root;
-    }
-
-    void SetRoot(TreeNode* value) {
-        this->root = value;
-    }
-
     void PrintPreOrder (const TreeNode* node = nullptr) const;
     void PrintInOrder  (const TreeNode* node = nullptr) const;
     void PrintPostOrder(const TreeNode* node = nullptr) const;
+    void DeleteNode(TreeNode* node);
+
+public:
+    BinaryTree(const std::vector<std::string>& nodes);
+    ~BinaryTree();
+
+    TreeNode* GetRoot() const;
+    void SetRoot(TreeNode* value);
+
+    void PrintPreOrder() const;
+    void PrintInOrder() const;
+    void PrintPostOrder() const;
     void PrintLevelOrder() const;
 };
 
@@ -497,53 +571,61 @@ void BinaryTree::DeleteNode(TreeNode* node) {
     delete node;
 }
 
+TreeNode* BinaryTree::GetRoot() const {
+    return this->root;
+}
+
+void BinaryTree::SetRoot(TreeNode* value) {
+    this->root = value;
+}
 
 void BinaryTree::PrintPreOrder(const TreeNode* node) const {
 
     if (node == nullptr) {
-        if (this->root == nullptr) {
-            return;
-        }
-
-        node = this->root;
+        return;
     }
 
-    std::print("{}", node->val);
-    if (node->left)  PrintPreOrder(node->left);
-    if (node->right) PrintPreOrder(node->right);
+    std::print("{}, ", node->val);
+    PrintPreOrder(node->left);
+    PrintPreOrder(node->right);
 }
 
+void BinaryTree::PrintPreOrder() const {
+    this->PrintPreOrder(this->root);
+    std::println("");
+}
 
 void BinaryTree::PrintInOrder(const TreeNode* node) const {
 
     if (node == nullptr) {
-        if (this->root == nullptr) {
-            return;
-        }
-
-        node = this->root;
+        return;
     }
 
-    if (node->left)  PrintInOrder(node->left);
-    std::print("{}", node->val);
-    if (node->right) PrintInOrder(node->right);
+    PrintInOrder(node->left);
+    std::print("{}, ", node->val);
+    PrintInOrder(node->right);
+}
+
+void BinaryTree::PrintInOrder() const {
+    this->PrintInOrder(this->root);
+    std::println("");
 }
 
 void BinaryTree::PrintPostOrder(const TreeNode* node) const {
 
     if (node == nullptr) {
-        if (this->root == nullptr) {
-            return;
-        }
-
-        node = this->root;
+        return;
     }
 
-    if (node->left)  PrintPostOrder(node->left);
-    if (node->right) PrintPostOrder(node->right);
-    std::print("{}", node->val);
+    PrintPostOrder(node->left);
+    PrintPostOrder(node->right);
+    std::print("{}, ", node->val);
 }
 
+void BinaryTree::PrintPostOrder() const {
+    this->PrintPostOrder(this->root);
+    std::println("");
+}
 
 void BinaryTree::PrintLevelOrder() const {
 
@@ -558,7 +640,7 @@ void BinaryTree::PrintLevelOrder() const {
         const TreeNode* curr = queue.front();
         queue.pop();
 
-        std::print("{}", curr->val);
+        std::print("{}, ", curr->val);
 
         if (curr->left) {
             queue.push(curr->left);
@@ -567,5 +649,6 @@ void BinaryTree::PrintLevelOrder() const {
             queue.push(curr->right);
         }
     }
-    
+
+    std::println("");
 }
