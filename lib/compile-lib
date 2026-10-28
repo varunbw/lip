@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+SOURCE_FILE_NAME="lip.cpp"
 LIBRARY_NAME="liblip.a"
 OBJECT_FILE_NAME="lip.o"
 
@@ -16,7 +17,7 @@ g++ -O3 \
     -fsanitize=address \
     -fsanitize=undefined \
     -o $OBJECT_FILE_NAME \
-    lip-library.cpp
+    $SOURCE_FILE_NAME
 
 if [ $? -ne 0 ]; then
     echo "Compilation failed"

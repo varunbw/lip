@@ -1,4 +1,14 @@
-# Compile
+#!/usr/bin/env bash
+
+# Compile library if it's not made
+if [[ ! -f "lib/liblip.a" ]]; then
+    echo "Library not found, recompiling..."
+    cd lib
+    ./compile-lib
+    cd ..
+fi
+
+# Compile solution code
 g++ -g \
     main.cpp -o main \
     -Llib -llip \
@@ -7,7 +17,6 @@ g++ -g \
     -fsanitize=address \
     -fsanitize=undefined
 
-# Check if compilation was successful
 if [ $? -ne 0 ]; then
     echo "Compilation failed"
     exit 1
