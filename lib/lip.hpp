@@ -42,18 +42,23 @@ std::vector<std::vector<char>> FileParse_Char2D(std::ifstream& fin);
 struct ListNode {
     int val;
     ListNode* next;
+
     ListNode();
-    explicit ListNode(int x);
+    ListNode(int x);
     ListNode(int x, ListNode* next);
 };
 
 class LinkedList {
+    
     ListNode* head;
     void Print(const ListNode* node) const;
     void DeleteNode(ListNode* node);
+    
 public:
+
     LinkedList(const std::vector<int>& nodes);
     ~LinkedList();
+    
     ListNode* GetFirst() const;
     void SetFirst(ListNode* value);
     void Print() const;
@@ -64,22 +69,29 @@ public:
 struct TreeNode {
     int val;
     TreeNode* left;
+
     TreeNode* right;
     TreeNode();
-    explicit TreeNode(int x);
+    TreeNode(int x);
 };
 
 class BinaryTree {
+
     TreeNode* root;
+
     void PrintPreOrder(const TreeNode* node) const;
     void PrintInOrder(const TreeNode* node) const;
     void PrintPostOrder(const TreeNode* node) const;
     void DeleteNode(TreeNode* node);
+
 public:
+
     BinaryTree(const std::vector<std::string>& nodes);
     ~BinaryTree();
+
     TreeNode* GetRoot() const;
     void SetRoot(TreeNode* value);
+
     void PrintPreOrder() const;
     void PrintInOrder() const;
     void PrintPostOrder() const;

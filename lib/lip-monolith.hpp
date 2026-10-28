@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <format>
 #include <fstream>
 #include <print>
@@ -43,19 +44,19 @@ std::string MakeErrorMessage(std::format_string<Args...> err, Args&&... args) {
 void ValidateInputStream(std::ifstream& fin) {
     if (fin.is_open() == false) {
         throw std::runtime_error(MakeErrorMessage(
-            "[ERROR]: Input stream not open"
+            "Input stream not open"
         ));
     }
 
     if (fin.fail()) {
         throw std::runtime_error(MakeErrorMessage(
-            "[ERROR]: Input stream failed"
+            "Input stream failed"
         ));
     }
 
     if (fin.eof()) {
         throw std::runtime_error(MakeErrorMessage(
-            "[ERROR]: Input stream at EOF, check testcases again"
+            "Input stream at EOF, check testcases again"
         ));
     }
 }
@@ -430,9 +431,9 @@ LinkedList::LinkedList(const std::vector<int>& nodes) {
     this->head = new ListNode(nodes[0]);
     ListNode* prev = head;
     
-    for (const int num : nodes) {
-
-        ListNode* newNode = new ListNode(num);
+    const size_t n = nodes.size();
+    for (size_t i = 1; i < n; i++) {
+        ListNode* newNode = new ListNode(nodes[i]);
         prev->next = newNode;
         prev = newNode;
     }

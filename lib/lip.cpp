@@ -1,5 +1,6 @@
 #include "lip.hpp"
 
+#include <cstddef>
 #include <print>
 #include <queue>
 #include <stdexcept>
@@ -17,19 +18,19 @@
 void ValidateInputStream(std::ifstream& fin) {
     if (fin.is_open() == false) {
         throw std::runtime_error(MakeErrorMessage(
-            "[ERROR]: Input stream not open"
+            "Input stream not open"
         ));
     }
 
     if (fin.fail()) {
         throw std::runtime_error(MakeErrorMessage(
-            "[ERROR]: Input stream failed"
+            "Input stream failed"
         ));
     }
 
     if (fin.eof()) {
         throw std::runtime_error(MakeErrorMessage(
-            "[ERROR]: Input stream at EOF, check testcases again"
+            "Input stream at EOF, check testcases again"
         ));
     }
 }
@@ -367,6 +368,16 @@ std::vector<std::vector<char>> FileParse_Char2D(std::ifstream& fin) {
 
 
 // -- Linked List
+ListNode::ListNode(int x) :
+    val(x),
+    next(nullptr)
+{}
+
+ListNode::ListNode(int x, ListNode* next) :
+    val(x),
+    next(next)
+{}
+
 LinkedList::LinkedList(const std::vector<int>& nodes) {
 
     if (nodes.empty()) {
@@ -376,9 +387,9 @@ LinkedList::LinkedList(const std::vector<int>& nodes) {
     this->head = new ListNode(nodes[0]);
     ListNode* prev = head;
     
-    for (const int num : nodes) {
-
-        ListNode* newNode = new ListNode(num);
+    const size_t n = nodes.size();
+    for (size_t i = 1; i < n; i++) {
+        ListNode* newNode = new ListNode(nodes[i]);
         prev->next = newNode;
         prev = newNode;
     }
@@ -415,6 +426,11 @@ void LinkedList::Print() const {
 
 
 // -- Binary Tree
+TreeNode::TreeNode(int val) :
+    val(val),
+    left(nullptr),
+    right(nullptr)
+{}
 
 /*
     @brief Constructs a binary tree out of the given vector
