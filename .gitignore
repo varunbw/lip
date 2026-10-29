@@ -1,3 +1,7 @@
+# Library
+*.a
+*.o
+
 # Temporary files
 temp/*
 *.temp
