@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Compile solution code
+g++ -g \
+    main.cpp -o main \
+    -std=c++23 \
+    -fsanitize=address \
+    -fsanitize=undefined
+
+if [ $? -ne 0 ]; then
+    echo "Compilation failed"
+    exit 1
+fi
+
+./main
