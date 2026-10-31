@@ -381,7 +381,8 @@ ListNode::ListNode(int x, ListNode* next) :
 LinkedList::LinkedList(const std::vector<int>& nodes) {
 
     if (nodes.empty()) {
-        throw std::runtime_error(MakeErrorMessage("Empty vector passed as argument"));
+        this->head = nullptr;
+        return;
     }
 
     this->head = new ListNode(nodes[0]);
@@ -406,7 +407,7 @@ void LinkedList::DeleteNode(ListNode* node) {
     }
 
     DeleteNode(node->next);
-    delete node;
+    // delete node;
 }
 
 void LinkedList::Print(const ListNode* node) const {
@@ -424,6 +425,13 @@ void LinkedList::Print() const {
     std::println("");
 }
 
+ListNode* LinkedList::GetFirst() const {
+    return this->head;
+}
+
+void LinkedList::SetFirst(ListNode* value) {
+    this->head = value;
+}
 
 // -- Binary Tree
 TreeNode::TreeNode(int val) :
