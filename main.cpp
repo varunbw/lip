@@ -3,6 +3,9 @@
 #include <fstream>
 #include <print>
 
+using std::vector;
+using std::string;
+
 class Solution {
 public:
 
@@ -14,6 +17,8 @@ int main(int argc, char** argv) {
     std::ifstream fin ("input.txt");
     std::ofstream fout("output.txt");
 
+    std::println("Hello world! Press Ctrl-C to exit");
+
     while (fin.eof() == false) {
 
         Solution sol;
@@ -23,11 +28,11 @@ int main(int argc, char** argv) {
         // std::println("{}", sol.);
 
         // -- 1D int
-        // std::vector<int> vec = FileParse_Int1D(fin);
+        // std::vector<int> vec = Parse_Int1D(fin);
         // std::println("{}", sol.);
 
         // -- 2D int
-        // std::vector<std::vector<int>> grid = FileParse_Int2D(fin);
+        // std::vector<std::vector<int>> grid = Parse_Int2D(fin);
         // std::println("{}", sol.);
 
         // -- String
@@ -35,27 +40,27 @@ int main(int argc, char** argv) {
         // std::println("{}", sol.);
         
         // -- 1D string
-        // std::vector<std::string> vec = FileParse_String1D(fin);
+        // std::vector<std::string> vec = Parse_String1D(fin);
         // std::println("{}", sol.);
 
         // -- 2D string
-        // std::vector<std::vector<std::string>> grid = FileParse_String2D(fin);
+        // std::vector<std::vector<std::string>> grid = Parse_String2D(fin);
         // std::println("{}", sol.);
 
         // -- 1D char
-        // std::vector<char> vec = FileParse_Char1D(fin);
+        // std::vector<char> vec = Parse_Char1D(fin);
         // std::println("{}", sol.);
 
         // -- 2D char
-        // std::vector<std::vector<char>> grid = FileParse_Char2D(fin);
+        // std::vector<std::vector<char>> grid = Parse_Char2D(fin);
         // std::println("{}", sol.);
 
         // -- Linked List
-        // LinkedList linkedList(FileParse_Int1D(fin));
+        // LinkedList linkedList(Parse_Int1D(fin));
         // std::println("{}", sol.);
 
         // -- Binary Tree
-        // BinaryTree binaryTree(FileParse_String1D(fin));
+        // BinaryTree binaryTree(Parse_String1D(fin));
         // std::println("{}", sol.);
     }
 

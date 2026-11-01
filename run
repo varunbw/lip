@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Compile library if it's not made
-if [[ ! -f "lib/liblip.a" ]]; then
+if [[ ! -f "lib/liblip.a" || $1 == "clean" ]]; then
     echo "Library not found, recompiling..."
     cd lib
     ./compile-lib
