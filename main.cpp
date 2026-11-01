@@ -15,9 +15,7 @@ public:
 int main(int argc, char** argv) {
 
     std::ifstream fin ("input.txt");
-    std::ofstream fout("output.txt");
-
-    std::println("Hello world! Press Ctrl-C to exit");
+    // std::ofstream fout("output.txt");
 
     while (fin.eof() == false) {
 
@@ -56,11 +54,11 @@ int main(int argc, char** argv) {
         // std::println("{}", sol.);
 
         // -- Linked List
-        // LinkedList linkedList(Parse_Int1D(fin));
+        // LinkedList list(Parse_Int1D(fin));
         // std::println("{}", sol.);
 
         // -- Binary Tree
-        // BinaryTree binaryTree(Parse_String1D(fin));
+        // BinaryTree tree(Parse_String1D(fin));
         // std::println("{}", sol.);
     }
 
