@@ -9,7 +9,7 @@ if [[ -f "$LIBRARY_NAME" ]]; then
 fi
 
 # Compile into object file
-g++ -O3 \
+g++ -O0 \
     -g \
     -c \
     -flto \

@@ -5,6 +5,7 @@
 #include <queue>
 #include <stdexcept>
 #include <sstream>
+#include <string>
 
 // -- Parsers
 /*
@@ -47,6 +48,50 @@ std::string GetLineFromStream(std::ifstream& fin) {
 
     return res;
 }
+
+int Parse_Int(std::ifstream& fin) {
+    int n; fin >> n;
+    return n;
+}
+
+float Parse_Float(std::ifstream& fin) {
+    float f; fin >> f;
+    return f;
+}
+
+char Parse_Char(std::ifstream& fin) {
+    char c; fin >> c;
+    return c;
+}
+
+bool Parse_Bool(std::ifstream& fin) {
+    std::string s; fin >> s;
+    bool b = (s == "true");
+    return b;
+}
+
+std::string Parse_String(std::ifstream& fin) {
+
+    // Eat all the whitespace nom nom nom
+    fin >> std::ws;
+
+    std::string s;
+    std::getline(fin, s);
+    if (s.empty()) {
+        return "";
+    }
+
+    if (s[0] == '"') {
+        s.erase(s.begin());
+    }
+    if (s.back() == '"') {
+        s.pop_back();
+    }
+
+    return s;
+}
+
+
 
 /*
     @brief Parse inputs into a vector<int> from the given stream `fin`

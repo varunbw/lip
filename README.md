@@ -8,10 +8,15 @@ Currently parses all known (to me) inputs for Leetcode problems
 ```bash
 git clone https://github.com/varunbw/lip
 cd lip
+```
+
+To use the code, edit `Solution` class in [main.cpp](main.cpp), (or anything you'd like honestly, the parsing functions don't really care what your main file looks like), and run `run`
+
+```bash
 ./run
 ```
 
-The run script will compile the library if its not present (which it won't be on the first run)
+The script will compile the library if its not present.
 
 In order to make a new library if you make some changes to the library code, run
 ```bash
@@ -22,18 +27,13 @@ In order to make a new library if you make some changes to the library code, run
 
 # Parsing
 
-### Basic data types:
+### Basic data types + String:
 ```cpp
-int n; fin >> n;
-float f; fin >> f;
-char c; fin >> c;
-bool b; fin >> b;
-```
-
-### String
-Slightly more effort because each test case string is wrapped in double quotes, so we need to get rid of those
-```cpp
-std::string s; fin >> s; s.erase(s.begin()); s.pop_back();
+int n         = Parse_Int(fin);
+float f       = Parse_Float(fin);
+char c        = Parse_Char(fin);
+bool b        = Parse_Bool(fin);
+std::string s = Parse_String(fin);
 ```
 
 ### Arrays
@@ -42,8 +42,8 @@ Note: `fin` here is a `std::ifstream`
 using std::vector;
 using std::string;
 
-vector<int> vec = Parse_Int1D(fin);
-vector<char> vec = Parse_Char1D(fin);
+vector<int> vec    = Parse_Int1D(fin);
+vector<char> vec   = Parse_Char1D(fin);
 vector<string> vec = Parse_String1D(fin);
 ```
 
@@ -52,8 +52,8 @@ vector<string> vec = Parse_String1D(fin);
 using std::vector;
 using std::string;
 
-vector<vector<int>> vec = Parse_Int2D(fin);
-vector<vector<char>> vec = Parse_Char2D(fin);
+vector<vector<int>> vec    = Parse_Int2D(fin);
+vector<vector<char>> vec   = Parse_Char2D(fin);
 vector<vector<string>> vec = Parse_String2D(fin);
 ```
 
@@ -109,3 +109,20 @@ while (fin.eof()) {
     // Parsing code
 }
 ```
+
+# Issues
+
+Please open an issue if you find a bug with the code, or would like to propose new features.
+
+### Format:
+```
+<Function name at which issue occurs>
+<Description of the issue>
+
+<Text dump or a screenshot please>
+<Any more information>
+```
+
+# Contributions & Issues
+
+Please open a pull request if you'd like to submit changes to the code, thanks. I do have some guidelines, please refer to [CONTRIBUTING.md](CONTRIBUTING.md)

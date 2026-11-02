@@ -31,6 +31,13 @@ std::string MakeErrorMessage(std::format_string<Args...> err, Args&&... args) {
 // -- Parsers
 void ValidateInputStream(std::ifstream& fin);
 std::string GetLineFromStream(std::ifstream& fin);
+
+int Parse_Int(std::ifstream& fin);
+float Parse_Float(std::ifstream& fin);
+char Parse_Char(std::ifstream& fin);
+bool Parse_Bool(std::ifstream& fin);
+std::string Parse_String(std::ifstream& fin);
+
 std::vector<int> Parse_Int1D(std::ifstream& fin);
 std::vector<std::vector<int>> Parse_Int2D(std::ifstream& fin);
 std::vector<std::string> Parse_String1D(std::ifstream& fin);

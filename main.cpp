@@ -21,8 +21,12 @@ int main(int argc, char** argv) {
 
         Solution sol;
 
-        // -- int
-        // int n; fin >> n;
+        // -- Basic
+        int n         = Parse_Int(fin);
+        float f       = Parse_Float(fin);
+        char c        = Parse_Char(fin);
+        bool b        = Parse_Bool(fin);
+        std::string s = Parse_String(fin);
         // std::println("{}", sol.);
 
         // -- 1D int
