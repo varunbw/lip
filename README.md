@@ -97,6 +97,15 @@ The parsing code for this would look like
 int k; fin >> k;
 vector<vector<int>> data = Parse_Int2D(fin);
 vector<string> queries = Parse_String1D(fin);
+
+std::println("{}", sol.Calculate(k, data, queries));
 ```
 
 `k` first, then `data`, then `queries`
+
+Since these lines are in a loop, it'll run till the input file is over
+```cpp
+while (fin.eof()) {
+    // Parsing code
+}
+```
