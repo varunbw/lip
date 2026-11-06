@@ -5,6 +5,7 @@
 #include <queue>
 #include <stdexcept>
 #include <sstream>
+#include <string>
 
 // -- Parsers
 /*
@@ -48,6 +49,50 @@ std::string GetLineFromStream(std::ifstream& fin) {
     return res;
 }
 
+int Parse_Int(std::ifstream& fin) {
+    int n; fin >> n;
+    return n;
+}
+
+float Parse_Float(std::ifstream& fin) {
+    float f; fin >> f;
+    return f;
+}
+
+char Parse_Char(std::ifstream& fin) {
+    char c; fin >> c;
+    return c;
+}
+
+bool Parse_Bool(std::ifstream& fin) {
+    std::string s; fin >> s;
+    bool b = (s == "true");
+    return b;
+}
+
+std::string Parse_String(std::ifstream& fin) {
+
+    // Eat all the whitespace nom nom nom
+    fin >> std::ws;
+
+    std::string s;
+    std::getline(fin, s);
+    if (s.empty()) {
+        return "";
+    }
+
+    if (s[0] == '"') {
+        s.erase(s.begin());
+    }
+    if (s.back() == '"') {
+        s.pop_back();
+    }
+
+    return s;
+}
+
+
+
 /*
     @brief Parse inputs into a vector<int> from the given stream `fin`
     @param `fin` The input file stream
@@ -56,7 +101,7 @@ std::string GetLineFromStream(std::ifstream& fin) {
     This works with the following format only:
         [1,2,3,4,...]
 */
-std::vector<int> FileParse_Int1D(std::ifstream& fin) {
+std::vector<int> Parse_Int1D(std::ifstream& fin) {
 
     ValidateInputStream(fin);
 
@@ -99,7 +144,7 @@ std::vector<int> FileParse_Int1D(std::ifstream& fin) {
     This works with the following format only:
         [[1,2,3,4,...],[5,6,7,8,...],...]
 */
-std::vector<std::vector<int>> FileParse_Int2D(std::ifstream& fin) {
+std::vector<std::vector<int>> Parse_Int2D(std::ifstream& fin) {
 
     ValidateInputStream(fin);
     std::string line = GetLineFromStream(fin);
@@ -156,7 +201,7 @@ std::vector<std::vector<int>> FileParse_Int2D(std::ifstream& fin) {
 
     Refer FAQs on why more formats aren't supported
 */
-std::vector<std::string> FileParse_String1D(std::ifstream& fin) {
+std::vector<std::string> Parse_String1D(std::ifstream& fin) {
 
     ValidateInputStream(fin);
     std::string line = GetLineFromStream(fin);
@@ -200,7 +245,7 @@ std::vector<std::string> FileParse_String1D(std::ifstream& fin) {
 
     Refer FAQs on why more formats aren't supported
 */
-std::vector<std::vector<std::string>> FileParse_String2D(std::ifstream& fin) {
+std::vector<std::vector<std::string>> Parse_String2D(std::ifstream& fin) {
 
     ValidateInputStream(fin);
     std::string line = GetLineFromStream(fin);
@@ -255,7 +300,7 @@ std::vector<std::vector<std::string>> FileParse_String2D(std::ifstream& fin) {
 
     Refer FAQs on why more formats aren't supported
 */
-std::vector<char> FileParse_Char1D(std::ifstream& fin) {
+std::vector<char> Parse_Char1D(std::ifstream& fin) {
 
     ValidateInputStream(fin);
     std::string line = GetLineFromStream(fin);
@@ -311,7 +356,7 @@ std::vector<char> FileParse_Char1D(std::ifstream& fin) {
 
     Refer FAQs on why more formats aren't supported
 */
-std::vector<std::vector<char>> FileParse_Char2D(std::ifstream& fin) {
+std::vector<std::vector<char>> Parse_Char2D(std::ifstream& fin) {
 
     ValidateInputStream(fin);
     std::string line = GetLineFromStream(fin);

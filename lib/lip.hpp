@@ -31,12 +31,19 @@ std::string MakeErrorMessage(std::format_string<Args...> err, Args&&... args) {
 // -- Parsers
 void ValidateInputStream(std::ifstream& fin);
 std::string GetLineFromStream(std::ifstream& fin);
-std::vector<int> FileParse_Int1D(std::ifstream& fin);
-std::vector<std::vector<int>> FileParse_Int2D(std::ifstream& fin);
-std::vector<std::string> FileParse_String1D(std::ifstream& fin);
-std::vector<std::vector<std::string>> FileParse_String2D(std::ifstream& fin);
-std::vector<char> FileParse_Char1D(std::ifstream& fin);
-std::vector<std::vector<char>> FileParse_Char2D(std::ifstream& fin);
+
+int Parse_Int(std::ifstream& fin);
+float Parse_Float(std::ifstream& fin);
+char Parse_Char(std::ifstream& fin);
+bool Parse_Bool(std::ifstream& fin);
+std::string Parse_String(std::ifstream& fin);
+
+std::vector<int> Parse_Int1D(std::ifstream& fin);
+std::vector<std::vector<int>> Parse_Int2D(std::ifstream& fin);
+std::vector<std::string> Parse_String1D(std::ifstream& fin);
+std::vector<std::vector<std::string>> Parse_String2D(std::ifstream& fin);
+std::vector<char> Parse_Char1D(std::ifstream& fin);
+std::vector<std::vector<char>> Parse_Char2D(std::ifstream& fin);
 
 // -- Linked List
 struct ListNode {
