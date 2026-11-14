@@ -5,6 +5,12 @@
 
 using namespace std;
 
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target, ListNode* node) {
+        
+    }
+};
 int main(void) {
 
    std::ifstream fin("input.txt");

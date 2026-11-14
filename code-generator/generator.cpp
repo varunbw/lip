@@ -1,9 +1,10 @@
 #include <algorithm>
 #include <cstddef>
+#include <filesystem>
 #include <fstream>
-#include <map>
+#include <iosfwd>
 #include <print>
-#include <ranges>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -15,98 +16,101 @@ struct SolutionInformation {
     std::vector<std::string> argumentsType{};
 };
 
-namespace Parser {
+SolutionInformation ParseFile(std::filesystem::path& path) {
 
-    SolutionInformation DeduceTypes(std::ifstream& in) {
+    std::ifstream in{path, std::ios::ate};
 
-        SolutionInformation res;
+    SolutionInformation res;
+
+    const std::streampos fileSize = in.tellg();
+    in.seekg(0);
+
+    res.rawSolution.resize(fileSize);
+    in.read(res.rawSolution.data(), fileSize);
+    in.seekg(0);
+
+    std::println("{}", res.rawSolution);
+    
+    struct {
+        bool publicToken{};
+        bool returnType{};
+        bool firstArgument{};
+    } seen;
+
+    bool tokenIsDataType = false;
+
+    while (in.eof() == false) {
+
+        std::string token;
+        in >> token;
         
-        struct {
-            bool publicToken{};
-            bool returnType{};
-            bool firstArgument{};
-        } seen;
-
-        bool tokenIsDataType = false;
-
-        while (in.eof() == false) {
-
-            std::string token;
-            in >> token;
-            
-            std::println("`{}`", token);
-
-            if (seen.publicToken == false) {
-                if (token != "public:") {
-                    continue;
-                }
-
-                seen.publicToken = true;
+        if (seen.publicToken == false) {
+            if (token != "public:") {
                 continue;
             }
 
-            if (seen.returnType == false) {
-                res.returnType = token;
-
-                seen.returnType = true;
-                continue;
-            }
-
-            if (seen.firstArgument == false) {
-                // This token will be the return type
-
-                // This token will be have the first argument
-                const size_t openBracketPos = token.find('(');
-                if (openBracketPos == std::string::npos) {
-                    continue;
-                }
-
-                res.functionName = token.substr(0, openBracketPos);
-
-                res.argumentsType.push_back(token.substr(openBracketPos + 1));
-                seen.firstArgument = true;
-                continue;
-            }
-
-            if (token == "{") {
-                break;
-            }
-            if (tokenIsDataType == false) {
-                tokenIsDataType = true;
-                continue;
-            }
-
-            res.argumentsType.push_back(token);
-            tokenIsDataType = false;
+            seen.publicToken = true;
+            continue;
         }
-        
-        // Don't really care about references, we just want the underlying
-        // type to know what to parse
-        std::ranges::for_each(res.argumentsType, [] (std::string& s) {
-            if (s.back() == '&') {
-                s.pop_back();
+
+        if (seen.returnType == false) {
+            res.returnType = token;
+
+            seen.returnType = true;
+            continue;
+        }
+
+        if (seen.firstArgument == false) {
+            // This token will be the return type
+
+            // This token will be have the first argument
+            const size_t openBracketPos = token.find('(');
+            if (openBracketPos == std::string::npos) {
+                continue;
             }
-        });
 
-        return res;
+            res.functionName = token.substr(0, openBracketPos);
+
+            res.argumentsType.push_back(token.substr(openBracketPos + 1));
+            seen.firstArgument = true;
+            continue;
+        }
+
+        if (token == "{") {
+            break;
+        }
+        if (tokenIsDataType == false) {
+            tokenIsDataType = true;
+            continue;
+        }
+
+        res.argumentsType.push_back(token);
+        tokenIsDataType = false;
     }
-}
+    
+    // Don't really care about references, we just want the underlying
+    // type to know what to parse
+    std::ranges::for_each(res.argumentsType, [] (std::string& s) {
+        if (s.back() == '&') {
+            s.pop_back();
+        }
+    });
 
+    return res;
+}
 
 namespace Print {
     void FullFile(std::ofstream& out, SolutionInformation& info);
-    void Includes(std::ofstream& out);
-    void Solution(std::ofstream& out, SolutionInformation& info);
+    void Header(std::ofstream& out, SolutionInformation& info);
     void MainFunction(std::ofstream& out, SolutionInformation& info);
     void ExecutionLoop(std::ofstream& out, SolutionInformation& info);
 
     void FullFile(std::ofstream& out, SolutionInformation& info) {
-        Print::Includes(out);
-        Print::Solution(out, info);
+        Print::Header(out, info);
         Print::MainFunction(out, info);
     }
 
-    void Includes(std::ofstream& out) {
+    void Header(std::ofstream& out, SolutionInformation& info) {
 
         const std::string includes = 
             "#include \"lib/lip.hpp\"\n"
@@ -117,12 +121,10 @@ namespace Print {
             "using namespace std;\n"
             "\n";
 
-        out << includes;
+        out << includes 
+            << info.rawSolution 
+            << '\n';
     };
-
-    void Solution(std::ofstream& out, SolutionInformation& info) {
-        out << info.rawSolution;
-    }
 
     void MainFunction(std::ofstream& out, SolutionInformation& info) {
 
@@ -180,8 +182,6 @@ namespace Print {
             const size_t bracketPos = callLine.find('{');
             callLine.replace(bracketPos, 2, variableName);
 
-            std::println("Call line: {}", callLine);
-
             out << "\t\t"
                 << callLine
                 << "\n";
@@ -217,10 +217,9 @@ namespace Print {
 
 int main(void) {
 
-    std::ifstream fin("temp.cpp");
+    std::filesystem::path filePath = "temp.cpp";
 
-    SolutionInformation info = Parser::DeduceTypes(fin);
-    std::println("{}", info.argumentsType);
+    SolutionInformation info = ParseFile(filePath);
 
     std::ofstream out("main-out.cpp");
     Print::FullFile(out, info);

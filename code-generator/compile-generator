@@ -9,6 +9,7 @@ fi
 
 # Compile
 g++ -O3 \
+    -g \
     -std=c++23 \
     -o $OUTPUT_FILE_NAME \
     $SOURCE_FILE_NAME
