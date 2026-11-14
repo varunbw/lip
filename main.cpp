@@ -1,69 +1,26 @@
 #include "lib/lip.hpp"
 
-#include <fstream>
 #include <print>
 
-using std::vector;
-using std::string;
+using namespace std;
 
 class Solution {
 public:
-
-
+    vector<int> twoSum(vector<int>& nums, int target) {
+        
+    }
 };
 
-int main(int argc, char** argv) {
+int main(void) {
 
-    std::ifstream fin ("input.txt");
-    // std::ofstream fout("output.txt");
+    std::ifstream fin("input.txt");
+    Solution sol;
 
     while (fin.eof() == false) {
+		vector<int> var1 = Parse_Int1D(fin);
+		int var2 = Parse_Int(fin);
 
-        Solution sol;
-
-        // -- Basic
-        // int n         = Parse_Int(fin);
-        // float f       = Parse_Float(fin);
-        // char c        = Parse_Char(fin);
-        // bool b        = Parse_Bool(fin);
-        // std::string s = Parse_String(fin);
-        // std::println("{}", sol.);
-
-        // -- 1D int
-        // std::vector<int> vec = Parse_Int1D(fin);
-        // std::println("{}", sol.);
-
-        // -- 2D int
-        // std::vector<std::vector<int>> grid = Parse_Int2D(fin);
-        // std::println("{}", sol.);
-
-        // -- String
-        // std::string s; fin >> s; s.erase(s.begin()); s.pop_back();
-        // std::println("{}", sol.);
-        
-        // -- 1D string
-        // std::vector<std::string> vec = Parse_String1D(fin);
-        // std::println("{}", sol.);
-
-        // -- 2D string
-        // std::vector<std::vector<std::string>> grid = Parse_String2D(fin);
-        // std::println("{}", sol.);
-
-        // -- 1D char
-        // std::vector<char> vec = Parse_Char1D(fin);
-        // std::println("{}", sol.);
-
-        // -- 2D char
-        // std::vector<std::vector<char>> grid = Parse_Char2D(fin);
-        // std::println("{}", sol.);
-
-        // -- Linked List
-        // LinkedList list(Parse_Int1D(fin));
-        // std::println("{}", sol.);
-
-        // -- Binary Tree
-        // BinaryTree tree(Parse_String1D(fin));
-        // std::println("{}", sol.);
+		std::println("{}", sol.twoSum(var1, var2));
     }
 
     return 0;

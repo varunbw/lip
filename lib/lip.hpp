@@ -5,7 +5,20 @@
 #include <string>
 #include <utility>
 #include <vector>
-
+#include <iostream>
+#include <algorithm>
+#include <numeric>
+#include <climits>
+#include <queue>
+#include <stack>
+#include <deque>
+#include <set>
+#include <map>
+#include <unordered_set>
+#include <unordered_map>
+#include <bitset>
+#include <tuple>
+#include <print>
 
 // -- Text Colors
 #define BLACK_START "\033[30m"

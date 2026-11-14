@@ -5,6 +5,7 @@
 #include <iosfwd>
 #include <print>
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -28,8 +29,6 @@ SolutionInformation ParseFile(std::filesystem::path& path) {
     res.rawSolution.resize(fileSize);
     in.read(res.rawSolution.data(), fileSize);
     in.seekg(0);
-
-    std::println("{}", res.rawSolution);
     
     struct {
         bool publicToken{};
@@ -115,7 +114,6 @@ namespace Print {
         const std::string includes = 
             "#include \"lib/lip.hpp\"\n"
             "\n"
-            "#include <fstream>\n"
             "#include <print>\n"
             "\n"
             "using namespace std;\n"
@@ -123,7 +121,7 @@ namespace Print {
 
         out << includes 
             << info.rawSolution 
-            << '\n';
+            << "\n\n";
     };
 
     void MainFunction(std::ofstream& out, SolutionInformation& info) {
@@ -131,18 +129,18 @@ namespace Print {
         const std::string mainFunction = 
             "int main(void) {\n"
             "\n"
-            "   std::ifstream fin(\"input.txt\");\n"
-            "   Solution sol\n"
+            "    std::ifstream fin(\"input.txt\");\n"
+            "    Solution sol;\n"
             "\n"
-            "   while (fin.eof() == false) {\n";
+            "    while (fin.eof() == false) {\n";
 
         out << mainFunction;
 
         ExecutionLoop(out, info);
 
         const std::string mainFunctionEnding =
-            "   }\n"
-            "   return 0;\n"
+            "    }\n\n"
+            "    return 0;\n"
             "}";
 
         out << mainFunctionEnding;
@@ -206,7 +204,7 @@ namespace Print {
 
         out << "\n" 
             << std::format(
-                "\t\tstd::println(\"{}\", sol.{})\n",
+                "\t\tstd::println(\"{}\", sol.{});\n",
                 "{}", //  for these ^^ braces
                 functionCall
             );
@@ -214,14 +212,13 @@ namespace Print {
 }
 
 
-
 int main(void) {
 
-    std::filesystem::path filePath = "temp.cpp";
+    std::filesystem::path filePath = "main.cpp";
 
     SolutionInformation info = ParseFile(filePath);
 
-    std::ofstream out("main-out.cpp");
+    std::ofstream out("main.cpp");
     Print::FullFile(out, info);
     
     return 0;
