@@ -1,27 +1,10 @@
-#include "lib/lip.hpp"
-
 #include <print>
 
-using namespace std;
-
-class Solution {
-public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        
-    }
-};
-
 int main(void) {
-
-    std::ifstream fin("input.txt");
-    Solution sol;
-
-    while (fin.eof() == false) {
-		vector<int> var1 = Parse_Int1D(fin);
-		int var2 = Parse_Int(fin);
-
-		std::println("{}", sol.twoSum(var1, var2));
-    }
-
+    std::println(
+        "Hello world!\n"
+        "Everything seems to be working properly.\n"
+        "Replace the contents of main.cpp as per the instructions in README and you're good to go."
+    );
     return 0;
 }

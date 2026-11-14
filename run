@@ -8,6 +8,14 @@ if [[ ! -f "lib/liblip.a" || $1 == "clean" ]]; then
     cd ..
 fi
 
+# Compile generator if it's not made
+if [[ ! -f "generate" || $1 == "clean" ]]; then
+    echo "Generator not found, recompiling..."
+    cd code-generator
+    ./compile-generator
+    cd ..
+fi
+
 # Compile solution code
 g++ -g \
     main.cpp -o main \
