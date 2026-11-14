@@ -8,16 +8,23 @@
 #include <vector>
 
 
+struct SolutionInformation {
+    std::string rawSolution{};
+    std::string functionName{};
+    std::string returnType{};
+    std::vector<std::string> argumentsType{};
+};
+
 namespace Parser {
 
-    std::vector<std::string> DeduceTypes(std::ifstream& in) {
+    SolutionInformation DeduceTypes(std::ifstream& in) {
 
-        std::vector<std::string> res;
-
+        SolutionInformation res;
+        
         struct {
-            bool publicToken = false;
-            bool returnType = false;
-            bool firstArgument = false;
+            bool publicToken{};
+            bool returnType{};
+            bool firstArgument{};
         } seen;
 
         bool tokenIsDataType = false;
@@ -39,7 +46,7 @@ namespace Parser {
             }
 
             if (seen.returnType == false) {
-                res.push_back(token);
+                res.returnType = token;
 
                 seen.returnType = true;
                 continue;
@@ -54,7 +61,9 @@ namespace Parser {
                     continue;
                 }
 
-                res.push_back(token.substr(openBracketPos + 1));
+                res.functionName = token.substr(0, openBracketPos);
+
+                res.argumentsType.push_back(token.substr(openBracketPos + 1));
                 seen.firstArgument = true;
                 continue;
             }
@@ -67,13 +76,13 @@ namespace Parser {
                 continue;
             }
 
-            res.push_back(token);
+            res.argumentsType.push_back(token);
             tokenIsDataType = false;
         }
         
         // Don't really care about references, we just want the underlying
         // type to know what to parse
-        std::ranges::for_each(res, [] (std::string& s) {
+        std::ranges::for_each(res.argumentsType, [] (std::string& s) {
             if (s.back() == '&') {
                 s.pop_back();
             }
@@ -85,9 +94,17 @@ namespace Parser {
 
 
 namespace Print {
+    void FullFile(std::ofstream& out, SolutionInformation& info);
     void Includes(std::ofstream& out);
-    void ParsingLoop(std::ofstream& out, std::vector<std::string>& dataTypes);
-    void MainFunction(std::ofstream& out, std::vector<std::string>& dataTypes);
+    void Solution(std::ofstream& out, SolutionInformation& info);
+    void MainFunction(std::ofstream& out, SolutionInformation& info);
+    void ExecutionLoop(std::ofstream& out, SolutionInformation& info);
+
+    void FullFile(std::ofstream& out, SolutionInformation& info) {
+        Print::Includes(out);
+        Print::Solution(out, info);
+        Print::MainFunction(out, info);
+    }
 
     void Includes(std::ofstream& out) {
 
@@ -103,7 +120,11 @@ namespace Print {
         out << includes;
     };
 
-    void MainFunction(std::ofstream& out, std::vector<std::string>& parsingTypes) {
+    void Solution(std::ofstream& out, SolutionInformation& info) {
+        out << info.rawSolution;
+    }
+
+    void MainFunction(std::ofstream& out, SolutionInformation& info) {
 
         const std::string mainFunction = 
             "int main(void) {\n"
@@ -111,12 +132,11 @@ namespace Print {
             "   std::ifstream fin(\"input.txt\");\n"
             "   Solution sol\n"
             "\n"
-            "   while (fin.eof() == false) {\n"
-            "\n";
+            "   while (fin.eof() == false) {\n";
 
         out << mainFunction;
 
-        ParsingLoop(out, parsingTypes);
+        ExecutionLoop(out, info);
 
         const std::string mainFunctionEnding =
             "   }\n"
@@ -126,26 +146,70 @@ namespace Print {
         out << mainFunctionEnding;
     }
 
-    void ParsingLoop(std::ofstream& out, std::vector<std::string>& dataTypes) {
+    void ExecutionLoop(std::ofstream& out, SolutionInformation& info) {
         
-        const std::map<std::string, std::string> typeToCodeMap = {
-            {"int",    "int n         = Parse_Int(fin);"},
-            {"float",  "float f       = Parse_Float(fin);"},
-            {"char",   "char c        = Parse_Char(fin);"},
-            {"bool",   "bool b        = Parse_Bool(fin);"},
-            {"string", "std::string s = Parse_String(fin);"},
-            {"vector<int>",    "vector<int> vec    = Parse_Int1D(fin);"},
-            {"vector<char>",   "vector<char> vec   = Parse_Char1D(fin);"},
-            {"vector<string>", "vector<string> vec = Parse_String1D(fin);"},
-            {"vector<vector<int>>",    "vector<vector<int>> vec    = Parse_Int2D(fin);"},
-            {"vector<vector<char>>",   "vector<vector<char>> vec   = Parse_Char2D(fin);"},
-            {"vector<vector<string>>", "vector<vector<string>> vec = Parse_String2D(fin);"},
-            {"ListNode*", "LinkedList list(Parse_Int1D(fin));"},
-            {"TreeNode*", "BinaryTree tree(Parse_String1D(fin));"},
+        const std::map<std::string, std::string_view> typeToCodeMap = {
+            {"int",    "int {} = Parse_Int(fin);"},
+            {"float",  "float {} = Parse_Float(fin);"},
+            {"char",   "char {} = Parse_Char(fin);"},
+            {"bool",   "bool {} = Parse_Bool(fin);"},
+            {"string", "std::string {} = Parse_String(fin);"},
+
+            {"vector<int>",    "vector<int> {} = Parse_Int1D(fin);"},
+            {"vector<char>",   "vector<char> {} = Parse_Char1D(fin);"},
+            {"vector<string>", "vector<string> {} = Parse_String1D(fin);"},
+
+            {"vector<vector<int>>",    "vector<vector<int>> {} = Parse_Int2D(fin);"},
+            {"vector<vector<char>>",   "vector<vector<char>> {} = Parse_Char2D(fin);"},
+            {"vector<vector<string>>", "vector<vector<string>> {} = Parse_String2D(fin);"},
+
+            {"ListNode*", "LinkedList {}(Parse_Int1D(fin));"},
+            {"TreeNode*", "BinaryTree {}(Parse_String1D(fin));"},
         };
 
+        int argumentCount = 0;
 
+        for (const std::string& argType : info.argumentsType) {
 
+            const std::string variableName = std::format(
+                "var{}", ++argumentCount
+            );
+
+            // No runtime format in C++23 so we doing this shit by hand
+            std::string callLine = std::string(typeToCodeMap.at(argType));
+            const size_t bracketPos = callLine.find('{');
+            callLine.replace(bracketPos, 2, variableName);
+
+            std::println("Call line: {}", callLine);
+
+            out << "\t\t"
+                << callLine
+                << "\n";
+        }
+
+        std::string argumentsSerialized = "";
+        for (int i = 0; i < argumentCount; i++) {
+            const std::string argument = std::format(
+                "var{}",
+                i + 1
+            );
+            argumentsSerialized.append(argument + ", ");
+        }
+        argumentsSerialized.pop_back();
+        argumentsSerialized.pop_back();
+
+        const std::string functionCall = std::format(
+            "{}({})",
+            info.functionName,
+            argumentsSerialized
+        );
+
+        out << "\n" 
+            << std::format(
+                "\t\tstd::println(\"{}\", sol.{})\n",
+                "{}", //  for these ^^ braces
+                functionCall
+            );
     }
 }
 
@@ -155,12 +219,11 @@ int main(void) {
 
     std::ifstream fin("temp.cpp");
 
-    std::vector<std::string> types = Parser::DeduceTypes(fin);
-    std::println("{}", types);
+    SolutionInformation info = Parser::DeduceTypes(fin);
+    std::println("{}", info.argumentsType);
 
     std::ofstream out("main-out.cpp");
-    Print::Includes(out);
-    Print::MainFunction(out, types);
+    Print::FullFile(out, info);
     
     return 0;
 }
