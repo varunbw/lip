@@ -51,7 +51,7 @@ public:
 
 #include <vector> // only necessary headers included
 
-using std::vector; // only necessary data structures declared here, you can change this in settings
+using namespace std; // only excusable for DSA
 
 class Solution {
 public:
@@ -62,14 +62,14 @@ public:
 
 int main(void) {
 
-    std::ifstream fin("input.txt");
+    ifstream fin("input.txt");
     Solution sol;
 
     while (fin.eof() == false) {
-        std::vector<int> vec = Parse_Int1D(fin);
+        vector<int> vec = Parse_Int1D(fin);
         int n  = Parse_Int(fin);
 
-        std::println("{}", sol.twoSum(vec, n));
+        println("{}", sol.twoSum(vec, n));
     }
 
     // No excess commented code for the other parsing functions
