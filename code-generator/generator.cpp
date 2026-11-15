@@ -3,9 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iosfwd>
-#include <print>
 #include <map>
-#include <set>
 #include <string>
 #include <vector>
 
@@ -172,7 +170,7 @@ namespace Print {
         for (const std::string& argType : info.argumentsType) {
 
             const std::string variableName = std::format(
-                "var{}", ++argumentCount
+                "var{}", argumentCount++
             );
 
             // No runtime format in C++23 so we doing this shit by hand
@@ -184,17 +182,29 @@ namespace Print {
                 << callLine
                 << "\n";
         }
+        argumentCount--;
 
         std::string argumentsSerialized = "";
-        for (int i = 0; i < argumentCount; i++) {
-            const std::string argument = std::format(
-                "var{}",
-                i + 1
-            );
-            argumentsSerialized.append(argument + ", ");
+        for (int i = 0; i <= argumentCount; i++) {
+
+            const std::string modifier = [&] () {
+                if (info.argumentsType[i] == "ListNode*") {
+                    return ".GetFirst()";
+                }
+                if (info.argumentsType[i] == "TreeNode*") {
+                    return ".GetRoot()";
+                }
+                return "";
+            } ();
+ 
+            const std::string argument = std::format("var{}{}, ", i, modifier);
+            argumentsSerialized.append(argument);
         }
-        argumentsSerialized.pop_back();
-        argumentsSerialized.pop_back();
+
+        if (argumentsSerialized.size()) {
+            argumentsSerialized.pop_back();
+            argumentsSerialized.pop_back();
+        } 
 
         const std::string functionCall = std::format(
             "{}({})",
@@ -215,7 +225,6 @@ namespace Print {
 int main(void) {
 
     std::filesystem::path filePath = "main.cpp";
-
     SolutionInformation info = ParseFile(filePath);
 
     std::ofstream out("main.cpp");
