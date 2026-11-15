@@ -110,7 +110,7 @@ namespace Print {
     void Header(std::ofstream& out, SolutionInformation& info) {
 
         const std::string includes = 
-            "#include \"lib/lip.hpp\"\n"
+            "#include \"parser/lip.hpp\"\n"
             "\n"
             "#include <print>\n"
             "\n"
