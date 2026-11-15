@@ -1,25 +1,25 @@
 #!/usr/bin/env bash
 
 # Compile library if it's not made
-if [[ ! -f "lib/liblip.a" || $1 == "clean" ]]; then
-    echo "Library not found, recompiling..."
-    cd lib
-    ./compile-lib
+if [[ ! -f "parser/liblip.a" || $1 == "clean" ]]; then
+    echo "Library not found, compiling..."
+    cd parser
+    ./compile-library.sh
     cd ..
 fi
 
 # Compile generator if it's not made
 if [[ ! -f "generate" || $1 == "clean" ]]; then
-    echo "Generator not found, recompiling..."
+    echo "Generator not found, compiling..."
     cd code-generator
-    ./compile-generator
+    ./compile-generator.sh
     cd ..
 fi
 
 # Compile solution code
 g++ -g \
     main.cpp -o main \
-    -Llib -llip \
+    -Lparser -llip \
     -flto=auto \
     -std=c++23 \
     -fsanitize=address \
