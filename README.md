@@ -8,24 +8,63 @@ Currently parses all known (to me) inputs for Leetcode problems
 ```bash
 git clone https://github.com/varunbw/lip
 cd lip
-```
-
-To use the code, edit `Solution` class in [main.cpp](main.cpp), (or anything you'd like honestly, the parsing functions don't really care what your main file looks like), and run `run`
-
-```bash
 ./run
 ```
 
-The script will compile the library if its not present.
+`./run` will compile the library and the code generator if they're not present.
 
-In order to make a new library if you make some changes to the library code, run
-```bash
-./run clean
+# Usage
+
+There are a variety of parsing functions available to deal with the inputs Leetcode provides, but you need not call them manually. This project includes a code generator, which will look at the function signature you give it, and accordingly generate a ready-to-use file with the parsing code all done.
+
+For example, consider the first Leetcode problem, `twoSum`:
+
+1. Paste the empty solution function as-in, into [main.cpp](main.cpp), overwriting its defualt contents.
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        
+    }
+};
 ```
 
-`clean` option will recompile the library
+2. Run `./generate`. (If this executable is missing, run `./run` to make it)
+
+3. Done, the generator will parse the function signature, and produce this output
+```cpp
+#include "lib/lip.hpp" // all necessary headers already included
+
+using namespace std; // only excusable for DSA
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        
+    }
+};
+
+int main(void) {
+
+    ifstream fin("input.txt");
+    Solution sol;
+
+    while (fin.eof() == false) {
+        vector<int> vec = Parse_Int1D(fin);
+        int n  = Parse_Int(fin);
+
+        println("{}", sol.twoSum(vec, n));
+    }
+
+    // No excess commented code for the other parsing functions
+
+    return 0;
+}
+```
 
 # Parsing
+
+Here are all the parsing functions provided by the library.
 
 ### Basic data types + String:
 ```cpp
@@ -70,18 +109,20 @@ BinaryTree tree(Parse_String1D(fin));
 ```
 
 
-# Input
+# Manual Input Parsing
 
-The parsing functions expect an input stream _reference_, to keep track of already parsed data. Simplest way to do it is already provided in [main.cpp](main.cpp); a file input stream; `std::ifstream`, parsing from `input.txt`. Feel free to change the file name in the code.
+If you don't like the generator and would rather do it yourself.
 
-In the common case of needing to parse two or more inputs, you need to call the parsing functions in the order that they appear in the input data
+The parsing functions expect an input stream _reference_, to keep track of already parsed data. Simplest way to do it is already provided in [template.cpp](template.cpp); a file input stream; `std::ifstream`, parsing from `input.txt`.
+
+In the common case of needing to parse two or more inputs, you need to call the parsing functions in the order that they appear in the input data.
 
 For example, consider this example function:
 ```cpp
 int Calculate(int k, vector<vector<int>> data, vector<string> queries);
 ```
 
-The input data for all functions is provided in the order that the variables appear in the function signature. An example test suite would look like this
+The input data for all functions is provided in the order that the variables appear in the function signature. An example test suite would look like this.
 ```
 4                           // plain int
 [[1,2,3],[4,5,6]]           // 2D int vector
@@ -91,6 +132,8 @@ The input data for all functions is provided in the order that the variables app
 ["query 18", "query 12"]
 ```
 First three lines are the first test case, next three are the second test case.
+
+#### Don't actually put any comments like above in `input.txt`.
 
 The parsing code for this would look like
 ```cpp
@@ -116,7 +159,7 @@ Please open an issue if you find a bug with the code, or would like to propose n
 
 ### Format:
 ```
-<Function name at which issue occurs>
+<Short title>
 <Description of the issue>
 
 <Text dump or a screenshot please>
