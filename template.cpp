@@ -1,7 +1,4 @@
-#include "lib/lip.hpp"
-
-#include <fstream>
-#include <print>
+#include "parser/lip.hpp"
 
 using std::vector;
 using std::string;
