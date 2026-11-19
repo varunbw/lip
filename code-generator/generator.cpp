@@ -5,6 +5,7 @@
 #include <iosfwd>
 #include <map>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 
@@ -112,8 +113,6 @@ namespace Print {
         const std::string includes = 
             "#include \"parser/lip.hpp\"\n"
             "\n"
-            "#include <print>\n"
-            "\n"
             "using namespace std;\n"
             "\n";
 
@@ -182,10 +181,9 @@ namespace Print {
                 << callLine
                 << "\n";
         }
-        argumentCount--;
 
         std::string argumentsSerialized = "";
-        for (int i = 0; i <= argumentCount; i++) {
+        for (int i = 0; i < argumentCount; i++) {
 
             const std::string modifier = [&] () {
                 if (info.argumentsType[i] == "ListNode*") {
@@ -212,12 +210,33 @@ namespace Print {
             argumentsSerialized
         );
 
-        out << "\n" 
-            << std::format(
-                "\t\tstd::println(\"{}\", sol.{});\n",
-                "{}", //  for these ^^ braces
-                functionCall
+        if (info.returnType != "void") {
+            out << std::format(
+                    "\n\t\tstd::println(\"{}\", sol.{});\n",
+                    "{}", //    for these ^^ braces
+                    functionCall
+                );
+            return;
+        }
+
+        // In case return type is `void`, the solution will modify one of the arguments
+        // Hence, we call the function as is, and then give an option to print all the args
+        // to reflect their new value
+        out << std::format("\n\t\tsol.{};\n", functionCall);
+
+        for (int i = 0; i < argumentCount; i++) {
+            const std::string_view argType = info.argumentsType[i];
+            if (argType == "ListNode*" || argType == "TreeNode*") {
+                continue;
+            }
+
+            const std::string arg = std::format("var{}", i);
+            out << std::format(
+                "\t\t// std::println(\"{}\", {});\n",
+                "{}", // for these ^^ braces
+                arg
             );
+        }
     }
 }
 
