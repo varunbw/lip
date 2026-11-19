@@ -210,6 +210,29 @@ namespace Print {
             argumentsSerialized
         );
 
+        if (info.returnType == "ListNode*") {
+            out << std::format(
+                "\n"
+                "\t\tLinkedList returnResult({});\n"
+                "\t\treturnResult.SetFirst(sol.{});\n"
+                "\t\treturnResult.Print();\n",
+                "{}",
+                functionCall
+            );
+            return;
+        }
+        if (info.returnType == "TreeNode*") {
+            out << std::format(
+                "\n"
+                "\t\tBinaryTree returnResult({});\n"
+                "\t\treturnResult.SetRoot(sol.{});\n"
+                "\t\treturnResult.PrintPreOrder();\n",
+                "{}",
+                functionCall
+            );
+            return;
+        }
+
         if (info.returnType != "void") {
             out << std::format(
                     "\n\t\tstd::println(\"{}\", sol.{});\n",
