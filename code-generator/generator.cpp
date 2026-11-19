@@ -213,10 +213,8 @@ namespace Print {
         if (info.returnType == "ListNode*") {
             out << std::format(
                 "\n"
-                "\t\tLinkedList returnResult({});\n"
-                "\t\treturnResult.SetFirst(sol.{});\n"
-                "\t\treturnResult.Print();\n",
-                "{}",
+                "\t\tListNode* result = sol.{};\n"
+                "\t\tLinkedList::Print(result);\n",
                 functionCall
             );
             return;
@@ -224,10 +222,8 @@ namespace Print {
         if (info.returnType == "TreeNode*") {
             out << std::format(
                 "\n"
-                "\t\tBinaryTree returnResult({});\n"
-                "\t\treturnResult.SetRoot(sol.{});\n"
-                "\t\treturnResult.PrintPreOrder();\n",
-                "{}",
+                "\t\tTreeNode* result = sol.{};\n"
+                "\t\tBinaryTree::PrintPreOrder(result);\n",
                 functionCall
             );
             return;

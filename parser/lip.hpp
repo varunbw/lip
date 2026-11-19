@@ -71,17 +71,16 @@ struct ListNode {
 class LinkedList {
     
     ListNode* head;
-    void Print(const ListNode* node) const;
     void DeleteNode(ListNode* node);
     
 public:
 
     LinkedList(const std::vector<int>& nodes);
     ~LinkedList();
-    
+
     ListNode* GetFirst() const;
     void SetFirst(ListNode* value);
-    void Print() const;
+    static void Print(const ListNode* node);
 };
 
 
@@ -99,9 +98,6 @@ class BinaryTree {
 
     TreeNode* root;
 
-    void PrintPreOrder(const TreeNode* node) const;
-    void PrintInOrder(const TreeNode* node) const;
-    void PrintPostOrder(const TreeNode* node) const;
     void DeleteNode(TreeNode* node);
 
 public:
@@ -112,8 +108,8 @@ public:
     TreeNode* GetRoot() const;
     void SetRoot(TreeNode* value);
 
-    void PrintPreOrder() const;
-    void PrintInOrder() const;
-    void PrintPostOrder() const;
-    void PrintLevelOrder() const;
+    static void PrintPreOrder(const TreeNode* node);
+    static void PrintInOrder(const TreeNode* node);
+    static void PrintPostOrder(const TreeNode* node);
+    static void PrintLevelOrder(const TreeNode* node);
 };

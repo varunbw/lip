@@ -452,10 +452,10 @@ void LinkedList::DeleteNode(ListNode* node) {
     }
 
     DeleteNode(node->next);
-    // delete node;
+    delete node;
 }
 
-void LinkedList::Print(const ListNode* node) const {
+void LinkedList::Print(const ListNode* node) {
 
     if (node == nullptr) {
         return;
@@ -463,11 +463,6 @@ void LinkedList::Print(const ListNode* node) const {
 
     std::print("{}, ", node->val);
     Print(node->next);
-}
-
-void LinkedList::Print() const {
-    this->Print(this->head);
-    std::println("");
 }
 
 ListNode* LinkedList::GetFirst() const {
@@ -561,7 +556,7 @@ void BinaryTree::SetRoot(TreeNode* value) {
     this->root = value;
 }
 
-void BinaryTree::PrintPreOrder(const TreeNode* node) const {
+void BinaryTree::PrintPreOrder(const TreeNode* node) {
 
     if (node == nullptr) {
         return;
@@ -572,12 +567,7 @@ void BinaryTree::PrintPreOrder(const TreeNode* node) const {
     PrintPreOrder(node->right);
 }
 
-void BinaryTree::PrintPreOrder() const {
-    this->PrintPreOrder(this->root);
-    std::println("");
-}
-
-void BinaryTree::PrintInOrder(const TreeNode* node) const {
+void BinaryTree::PrintInOrder(const TreeNode* node) {
 
     if (node == nullptr) {
         return;
@@ -588,12 +578,7 @@ void BinaryTree::PrintInOrder(const TreeNode* node) const {
     PrintInOrder(node->right);
 }
 
-void BinaryTree::PrintInOrder() const {
-    this->PrintInOrder(this->root);
-    std::println("");
-}
-
-void BinaryTree::PrintPostOrder(const TreeNode* node) const {
+void BinaryTree::PrintPostOrder(const TreeNode* node) {
 
     if (node == nullptr) {
         return;
@@ -604,19 +589,15 @@ void BinaryTree::PrintPostOrder(const TreeNode* node) const {
     std::print("{}, ", node->val);
 }
 
-void BinaryTree::PrintPostOrder() const {
-    this->PrintPostOrder(this->root);
-    std::println("");
-}
 
-void BinaryTree::PrintLevelOrder() const {
+void BinaryTree::PrintLevelOrder(const TreeNode* node) {
 
-    if (this->root == nullptr) {
+    if (node == nullptr) {
         return;
     }
 
     std::queue<const TreeNode*> queue;
-    queue.push(this->root);
+    queue.push(node);
 
     while (queue.size()) {
         const TreeNode* curr = queue.front();
